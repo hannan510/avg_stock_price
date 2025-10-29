@@ -86,6 +86,13 @@ hr {
     border: none;
     border-top: 1px solid #ccc;
 }
+.reset-btn {
+    background-color: #f44336;
+    margin-top: 10px;
+}
+.reset-btn:hover {
+    background-color: #d32f2f;
+}
 </style>
 </head>
 <body>
@@ -98,6 +105,7 @@ hr {
 <input type="number" id="qty2" placeholder="Second Quantity" step="any">
 <input type="number" id="price2" placeholder="Second Price per Share" step="any">
 <button onclick="calculateAverage()">Calculate Average</button>
+<button class="reset-btn" onclick="resetAverage()">Reset</button>
 <div class="result" id="averageResult"></div>
 
 <hr>
@@ -108,13 +116,17 @@ hr {
 <input type="number" id="targetAvg" placeholder="Desired Average Price" step="any">
 <input type="number" id="secondQty" placeholder="Planned Second Quantity" step="any">
 <button onclick="calculateSecondBuy()">Calculate Needed Price & Investment</button>
+<button class="reset-btn" onclick="resetSecond()">Reset</button>
 <div class="result" id="neededResult"></div>
 
 </div>
 
 <script>
-function formatNum(value, decimals = 2) {
-    return parseFloat(value).toFixed(decimals);
+function formatINR(value, decimals = 2) {
+    return value.toLocaleString('en-IN', { 
+        minimumFractionDigits: decimals, 
+        maximumFractionDigits: decimals 
+    });
 }
 
 function calculateAverage() {
@@ -135,11 +147,11 @@ function calculateAverage() {
     const avgPrice = totalInvestment / totalQty;
 
     document.getElementById('averageResult').innerHTML = `
-        <strong>First Investment:</strong> ${formatNum(investment1, 2)}<br>
-        <strong>Second Investment:</strong> ${formatNum(investment2, 2)}<br>
-        <strong>Total Investment:</strong> ${formatNum(totalInvestment, 2)}<br>
+        <strong>First Investment:</strong> ₹${formatINR(investment1)}<br>
+        <strong>Second Investment:</strong> ₹${formatINR(investment2)}<br>
+        <strong>Total Investment:</strong> ₹${formatINR(totalInvestment)}<br>
         <strong>Total Quantity:</strong> ${Math.round(totalQty)} shares<br><br>
-        <span class="highlight">📈 New Average Price: ${formatNum(avgPrice, 3)}</span>
+        <span class="highlight">📈 New Average Price: ₹${formatINR(avgPrice, 3)}</span>
     `;
 }
 
@@ -159,9 +171,26 @@ function calculateSecondBuy() {
 
     document.getElementById('neededResult').innerHTML = `
         <strong>Second Quantity:</strong> ${Math.round(qty2)} shares<br>
-        <strong>Required Price per Share:</strong> <span class="highlight">${formatNum(price2, 3)}</span><br>
-        <strong>Total Investment Needed:</strong> ${formatNum(investment2, 2)}
+        <strong>Required Price per Share:</strong> <span class="highlight">₹${formatINR(price2, 3)}</span><br>
+        <strong>Total Investment Needed:</strong> ₹${formatINR(investment2)}
     `;
+}
+
+// Reset functions
+function resetAverage() {
+    document.getElementById('qty1').value = '';
+    document.getElementById('price1').value = '';
+    document.getElementById('qty2').value = '';
+    document.getElementById('price2').value = '';
+    document.getElementById('averageResult').innerHTML = '';
+}
+
+function resetSecond() {
+    document.getElementById('knownQty1').value = '';
+    document.getElementById('knownPrice1').value = '';
+    document.getElementById('targetAvg').value = '';
+    document.getElementById('secondQty').value = '';
+    document.getElementById('neededResult').innerHTML = '';
 }
 </script>
 </body>
