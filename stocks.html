@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stock Weighted Average Calculator</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to right, #74ebd5, #ACB6E5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    min-height: 100vh;
+    margin: 0;
+}
+.container {
+    background-color: white;
+    padding: 25px 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    max-width: 400px;
+    width: 100%;
+}
+h2, h4 { text-align: center; color: #333; }
+h2 { margin-bottom: 20px; }
+input, button {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+input[type="number"] { -moz-appearance: textfield; }
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+button:hover { background-color: #45a049; }
+.result {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f0f0f0;
+    border-radius: 10px;
+    text-align: center;
+    font-weight: bold;
+    white-space: pre-line;
+}
+hr { margin: 30px 0; border: none; border-top: 1px solid #ccc; }
+</style>
+</head>
+<body>
+<div class="container">
+<h2>Stock Weighted Average Calculator</h2>
+
+<h4>Calculate New Average Price</h4>
+<input type="number" id="qty1" placeholder="First Quantity" step="any">
+<input type="number" id="price1" placeholder="First Price per Share" step="any">
+<input type="number" id="qty2" placeholder="Second Quantity" step="any">
+<input type="number" id="price2" placeholder="Second Price per Share" step="any">
+<button onclick="calculateAverage()">Calculate Average</button>
+<div class="result" id="averageResult"></div>
+
+<hr>
+
+<h4>Second Buy to Achieve Target Average</h4>
+<input type="number" id="knownQty1" placeholder="First Quantity" step="any">
+<input type="number" id="knownPrice1" placeholder="First Price per Share" step="any">
+<input type="number" id="targetAvg" placeholder="Desired Average Price" step="any">
+<input type="number" id="secondQty" placeholder="Planned Second Quantity" step="any">
+<button onclick="calculateSecondBuy()">Calculate Needed Price & Investment</button>
+<div class="result" id="neededResult"></div>
+
+</div>
+
+<script>
+function calculateAverage() {
+    const qty1 = parseFloat(document.getElementById('qty1').value);
+    const price1 = parseFloat(document.getElementById('price1').value);
+    const qty2 = parseFloat(document.getElementById('qty2').value);
+    const price2 = parseFloat(document.getElementById('price2').value);
+
+    if (isNaN(qty1) || isNaN(price1) || isNaN(qty2) || isNaN(price2)) {
+        alert('Please enter valid numbers.');
+        return;
+    }
+
+    const investment1 = qty1 * price1;
+    const investment2 = qty2 * price2;
+    const totalQty = qty1 + qty2;
+    const totalInvestment = investment1 + investment2;
+    const avgPrice = totalInvestment / totalQty;
+
+    document.getElementById('averageResult').innerText =
+        `First Investment: ${investment1.toFixed(3)}\n` +
+        `Second Investment: ${investment2.toFixed(3)}\n` +
+        `Total Investment: ${totalInvestment.toFixed(3)}\n` +
+        `Total Quantity: ${totalQty.toFixed(3)}\n` +
+        `New Average Price: ${avgPrice.toFixed(3)}`;
+}
+
+function calculateSecondBuy() {
+    const qty1 = parseFloat(document.getElementById('knownQty1').value);
+    const price1 = parseFloat(document.getElementById('knownPrice1').value);
+    const targetAvg = parseFloat(document.getElementById('targetAvg').value);
+    const qty2 = parseFloat(document.getElementById('secondQty').value);
+
+    if (isNaN(qty1) || isNaN(price1) || isNaN(targetAvg) || isNaN(qty2) || qty2 <= 0) {
+        alert('Please enter valid numbers.');
+        return;
+    }
+
+    // Calculate required price per share for second buy
+    const price2 = ((targetAvg * (qty1 + qty2)) - (qty1 * price1)) / qty2;
+    const investment2 = price2 * qty2;
+
+    document.getElementById('neededResult').innerText =
+        `Second Quantity to buy: ${qty2.toFixed(3)} shares\n` +
+        `Required Price per Share: ${price2.toFixed(3)}\n` +
+        `Total Investment Needed: ${investment2.toFixed(3)}`;
+}
+</script>
+</body>
+</html>
